@@ -8,10 +8,10 @@ This file does two things:
 
 import os
 import threading
+import asyncio
 from flask import Flask
-import main  # This is your Telegram bot module
+import main  # Ensure this is your Telegram bot module
 
-# Initialize Flask app
 app = Flask(__name__)
 
 @app.route('/')
@@ -19,15 +19,18 @@ def index():
     return "Instagram Reposting Bot is running!"
 
 def run_bot():
-    # This function starts your Telegram bot
+    # Create a new event loop for this thread
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    # Now, run your bot's main function
     main.main()
 
 if __name__ == '__main__':
-    # Start the bot in a separate thread so it runs concurrently with the web server
+    # Start the bot in a separate thread
     bot_thread = threading.Thread(target=run_bot)
-    bot_thread.daemon = True
     bot_thread.start()
 
-    # Bind to the port Heroku provides (or default to 5000)
+    # Bind to the port assigned by Heroku
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
