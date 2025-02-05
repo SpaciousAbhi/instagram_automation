@@ -1,2 +1,2 @@
-web: python main.py
+web: python server.py
 worker: python scheduler.py
